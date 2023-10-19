@@ -21,7 +21,9 @@ jobs:
       - name: Publish
         run: dotnet publish -c Release -o output
       - name: Create KEY
-        run: echo "$SSH_PRIVATE_KEY" > deploy.key
+        run: |
+          echo "$SSH_PRIVATE_KEY" > deploy.key
+          chmod 600 deploy.key
       - name: Stop the server
         run: |
           if ssh -o StrictHostKeyChecking=no -i deploy_key $VM_USER@$VM_IP "systemctl is-active AutoDemo"; then
