@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
-app.MapGet("/version", () => new { version = 2 });
+app.MapGet("/version", () => new { version = 3 });
 
 app.Run();
 
