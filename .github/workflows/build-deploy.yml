@@ -35,6 +35,6 @@ jobs:
         run: |
           scp -o StrictHostKeyChecking=no -i deploy.key AutoDemo.service $VM_USER@$VM_IP:/etc/systemd/system/AutoDemo.service
           ssh -o StrictHostKeyChecking=no -i deploy.key $VM_USER@$VM_IP "systemctl daemon-reload"
-          scp -i deploy.key -r output $VM_USER@$VM_IP:/server
+          scp -o StrictHostKeyChecking=no -i deploy.key -r output $VM_USER@$VM_IP:/server
       - name: Deploy
         run: ssh -i deploy.key $VM_USER@$VM_IP:/server 'cd /server/output && dotnet AutoDemo.dll --urls="http://[::]/"'
