@@ -43,4 +43,4 @@ jobs:
           scp -o StrictHostKeyChecking=no -i deploy.key -r output $VM_USER@$VM_IP:/server
       - name: Run the server 
         run: |
-          ssh -o StrictHostKeyChecking=no -i deploy.key $VM_USER@$VM_IP "service AutoDemo start"
+          ssh -o StrictHostKeyChecking=no -i deploy.key $VM_USER@$VM_IP "service AutoDemo restart"
