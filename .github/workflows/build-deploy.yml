@@ -38,7 +38,7 @@ jobs:
           # Reload the daemon
           ssh -o StrictHostKeyChecking=no -i deploy.key $VM_USER@$VM_IP "systemctl daemon-reload"
           # Create the /server folder if it doesn't exist
-          ssh -o StrictHostKeyChecking=no -i deploy_key $SSH_USERNAME@$VM_IP "mkdir -p /server"
+          ssh -o StrictHostKeyChecking=no -i deploy.key $SSH_USERNAME@$VM_IP "mkdir -p /server"
           # Upload files
           scp -o StrictHostKeyChecking=no -i deploy.key -r output $VM_USER@$VM_IP:/server
       - name: Deploy
