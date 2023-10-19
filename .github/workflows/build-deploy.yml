@@ -1,0 +1,38 @@
+﻿name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VM_USER: ${{ secrets.VM_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      VM_IP: ${{ secrets.VM_IP }}
+  steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+    - name: Publish
+      run: dotnet publish -c Release -o output
+    - name: Create KEY
+      run: echo "$SSH_PRIVATE_KEY" > deploy.key
+    - name: Stop the server
+      run: |
+        if ssh -o StrictHostKeyChecking=no -i deploy_key $VM_USER@$VM_IP "systemctl is-active AutoDemo"; then
+          ssh -o StrictHostKeyChecking=no -i deploy_key $VM_USER@$VM_IP "service AutoDemo stop"
+        else
+          echo "Service doesn't exist or is not running. No need to stop."
+        fi
+    - name: Upload
+      run: |
+        scp -o StrictHostKeyChecking=no -i deploy.key AutoDemo.service $VM_USER@$VM_IP:/etc/systemd/system/AutoDemo.service
+        ssh -o StrictHostKeyChecking=no -i deploy.key $VM_USER@$VM_IP "systemctl daemon-reload"
+        scp -i deploy.key -r output $VM_USER@$VM_IP:/server
+    - name: Deploy
+      run: ssh -i deploy.key $VM_USER@$VM_IP:/server 'cd /server/output && dotnet AutoDemo.dll --urls="http://[::]/"'
