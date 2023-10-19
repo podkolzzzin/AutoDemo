@@ -41,5 +41,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i deploy.key $VM_USER@$VM_IP "mkdir -p /server"
           # Upload files
           scp -o StrictHostKeyChecking=no -i deploy.key -r output $VM_USER@$VM_IP:/server
-      - name: Deploy
-        run: ssh -i deploy.key $VM_USER@$VM_IP:/server 'cd /server/output && dotnet AutoDemo.dll --urls="http://[::]/"'
+      - name: Run the server 
+        run: |
+          ssh -o StrictHostKeyChecking=no -i deploy.key $VM_USER@$VM_IP "service AutoDemo start"
